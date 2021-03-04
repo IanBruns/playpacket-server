@@ -25,5 +25,5 @@ VALUES
 (1, 'Hot Swap', 'If a 0 is played, that person may swap hands with another player', 2),
 (2, 'Free Parking', 'All money lost due to taxes or cards goes to free parking, player who lands on that space
 takes the pot', 1),
-(2, 'Double Go', ' A Player receives $400 for landing DIRECTLY ON Go.', 1),
+(2, 'Double Go', 'A Player receives $400 for landing DIRECTLY ON Go.', 1),
 (2, null, 'When in jail, a player cannot collect any rent money from other players.', 2),
