@@ -16,7 +16,7 @@ VALUES
 INSERT INTO games (game_name)
 VALUES
 ('Uno'),
-('Monopoly'),
+('Monopoly');
 
 INSERT INTO RULES (game_id, rule_title, rule_description, assigned_user)
 VALUES
@@ -26,4 +26,4 @@ VALUES
 (2, 'Free Parking', 'All money lost due to taxes or cards goes to free parking, player who lands on that space
 takes the pot', 1),
 (2, 'Double Go', 'A Player receives $400 for landing DIRECTLY ON Go.', 1),
-(2, null, 'When in jail, a player cannot collect any rent money from other players.', 2),
+(2, null, 'When in jail, a player cannot collect any rent money from other players.', 2);
