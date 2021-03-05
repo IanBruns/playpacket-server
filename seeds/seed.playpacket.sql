@@ -1,6 +1,7 @@
 BEGIN;
 
 TRUNCATE
+    usersgames,
     rules,
     games,
     users
@@ -18,7 +19,7 @@ VALUES
 ('Uno'),
 ('Monopoly');
 
-INSERT INTO RULES (game_id, rule_title, rule_description, assigned_user)
+INSERT INTO rules (game_id, rule_title, rule_description, assigned_user)
 VALUES
 (1, '+2', 'Draw 2 can be played on other draw 2 card, next player must draw 2xnumber of stacked draw 2s', 1),
 (1, null, 'If anyone plays a 6, everyone must slap the deck. The last person to slap must take 2 cards', 1),
@@ -27,3 +28,12 @@ VALUES
 takes the pot', 1),
 (2, 'Double Go', 'A Player receives $400 for landing DIRECTLY ON Go.', 1),
 (2, null, 'When in jail, a player cannot collect any rent money from other players.', 2);
+
+INSERT INTO usersgames (user_id, games_id)
+VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 2);
+
+COMMIT;
