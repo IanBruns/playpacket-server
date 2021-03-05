@@ -21,10 +21,62 @@ function makeUsersArray() {
     ];
 }
 
+function makeGamesArray() {
+    return [
+        {
+            id: 1,
+            game_name: 'game 1'
+        },
+        {
+            id: 2,
+            game_name: 'game 2'
+        },
+        {
+            id: 3,
+            game_name: 'game 3'
+        }
+    ];
+}
+
+function makeRulesArray() {
+    return [
+        {
+            id: 1,
+            game_id: 1,
+            rule_title: 'title 1',
+            rule_description: 'description 1',
+            assigned_user: 1
+        },
+        {
+            id: 2,
+            game_id: 1,
+            rule_title: 'title 2',
+            rule_description: 'description 2',
+            assigned_user: 2
+        },
+        {
+            id: 3,
+            game_id: 2,
+            rule_title: 'title 3',
+            rule_description: 'description 3',
+            assigned_user: 1
+        },
+        {
+            id: 4,
+            game_id: 3,
+            rule_title: 'title 4',
+            rule_description: 'description 4',
+            assigned_user: 3
+        }
+    ]
+}
+
 function makePlayPacketFixtures() {
     const testUsers = makeUsersArray();
+    const testGames = makeGamesArray();
+    const testRules = makeRulesArray();
 
-    return { testUsers, };
+    return { testUsers, testGames, testRules };
 }
 
 function cleanTables(db) {
