@@ -125,6 +125,18 @@ function seedGames(db, games) {
         });
 }
 
+function seedRules(db, users, games, rules) {
+    return db.transaction(async trx => {
+        await seedUsers(trx, users);
+        await seedGames(trx, games);
+        await trx.into('rules').insert(rules)
+        await trx.raw(
+            `SELECT setval('rules_id_seq', ?)`,
+            [rules[rules.length - 1].id],
+        )
+    })
+}
+
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     const token = jwt.sign({ user_id: user.id }, secret, {
