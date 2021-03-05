@@ -115,6 +115,16 @@ function seedUsers(db, users) {
             ));
 }
 
+function seedGames(db, games) {
+    return db.into('games').insert(games)
+        .then(() => {
+            db.raw(
+                `SELECT setval('games_id_seq', ?)`,
+                [games[games.length - 1].id],
+            );
+        });
+}
+
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     const token = jwt.sign({ user_id: user.id }, secret, {
