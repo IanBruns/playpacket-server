@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe(`Reviews Enpoints`, function () {
+describe.only(`Reviews Enpoints`, function () {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
@@ -24,4 +24,19 @@ describe(`Reviews Enpoints`, function () {
     before('cleanup', () => helpers.cleanTables(db));
 
     afterEach('cleanup', () => helpers.cleanTables(db));
+
+    describe(`GET /api/rules`, () => {
+        context('When there are no rules in the database', () => {
+            beforeEach('seed with only users', () => {
+                return helpers.seedUsers(db, testUsers);
+            });
+
+            it('returns a 200 and an empty array', () => {
+                return supertest(app)
+                    .get('/api/rules')
+                    .set('Authorization', helpers.makeAuthHeader(testUsers))
+                    .expect(200, []);
+            });
+        });
+    });
 })
