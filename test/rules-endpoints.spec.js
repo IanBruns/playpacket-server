@@ -34,9 +34,27 @@ describe.only(`Reviews Enpoints`, function () {
             it('returns a 200 and an empty array', () => {
                 return supertest(app)
                     .get('/api/rules')
-                    .set('Authorization', helpers.makeAuthHeader(testUsers))
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
                     .expect(200, []);
             });
         });
+
+        context('When there are rules in the database', () => {
+            beforeEach('Seed tables in full', () => {
+                return helpers.seedRules(db, testUsers, testGames, testRules);
+            });
+
+            it('Returns a 200 and the users rules only', () => {
+                return helpers.makeExpectedRulesForUser(db, testUser)
+                    .then(rules => {
+                        const expectedRules = rules.map(rule => helpers.sanitizeRules(rule))
+
+                        return supertest(app)
+                            .get('/api/rules')
+                            .set('Authorization', helpers.makeAuthHeader(testUser))
+                            .expect(200, expectedRules);
+                    });
+            });
+        });
     });
-})
+});

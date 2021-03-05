@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const xss = require('xss');
 
 function makeUsersArray() {
     return [
@@ -137,6 +138,24 @@ function seedRules(db, users, games, rules) {
     })
 }
 
+function makeExpectedRulesForUser(db, user) {
+    return db.select('*')
+        .from('rules')
+        .fullOuterJoin('games', 'games.id', 'rules.game_id')
+        .where({ assigned_user: user.id })
+}
+
+function sanitizeRules(rule) {
+    return {
+        id: rule.id,
+        game_id: rule.game_id,
+        game_name: xss(rule.game_name),
+        rule_title: xss(rule.rule_title),
+        rule_description: xss(rule.rule_description),
+        assigned_user: rule.assigned_user
+    }
+}
+
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     const token = jwt.sign({ user_id: user.id }, secret, {
@@ -151,5 +170,9 @@ module.exports = {
     makePlayPacketFixtures,
     cleanTables,
     seedUsers,
+    seedGames,
+    seedRules,
+    makeExpectedRulesForUser,
+    sanitizeRules,
     makeAuthHeader,
 }

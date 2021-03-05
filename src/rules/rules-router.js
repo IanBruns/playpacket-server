@@ -8,7 +8,7 @@ const jsonBodyParser = express.json();
 rulesRouter.route('/')
     .all(requireAuth)
     .get((req, res, next) => {
-        return res.status(200).send('Hi, mom!');
+        return res.status(200).send([]);
     })
 
-module.exports - rulesRouter;
+module.exports = rulesRouter;
