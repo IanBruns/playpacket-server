@@ -1,7 +1,6 @@
 BEGIN;
 
 TRUNCATE
-    usersgames,
     rules,
     games,
     users
