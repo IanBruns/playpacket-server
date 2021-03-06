@@ -14,7 +14,8 @@ rulesRouter.route('/')
             .catch(next);
     })
     .post(jsonBodyParser, (req, res, next) => {
-
-    })
+        const { rule_name, rule_description, game_id } = req.body;
+        const newRule = { rule_name, rule_description, game_id };
+    )}
 
 module.exports = rulesRouter;
