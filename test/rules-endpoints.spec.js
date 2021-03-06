@@ -47,7 +47,7 @@ describe.only(`Reviews Enpoints`, function () {
             it('Returns a 200 and the users rules only', () => {
                 return helpers.makeExpectedRulesForUser(db, testUser)
                     .then(rules => {
-                        const expectedRules = rules.map(rule => helpers.sanitizeRules(rule))
+                        const expectedRules = rules.map(rule => helpers.sanitizeRules(rule));
 
                         return supertest(app)
                             .get('/api/rules')

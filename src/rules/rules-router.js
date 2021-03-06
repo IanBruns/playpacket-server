@@ -8,7 +8,11 @@ const jsonBodyParser = express.json();
 rulesRouter.route('/')
     .all(requireAuth)
     .get((req, res, next) => {
-        return res.status(200).send([]);
+        RulesService.getUserRules(req.app.get('db'), req.user.id)
+            .then(rules => {
+                return res.json(rules.map(RulesService.sanitizeUserRule));
+            })
+            .catch(next);
     })
 
 module.exports = rulesRouter;
