@@ -61,6 +61,25 @@ describe.only(`Reviews Enpoints`, function () {
     describe(`POST /api/rules`, () => {
         beforeEach(`Seed in full`, () => {
             return helpers.seedRules();
-        })
-    })
+        });
+
+        // ['exercise_name', 'exercise_description'].forEach(field => {
+        //     const newExercise = {
+        //         exercise_name: 'Test Exercise',
+        //         exercise_description: 'Test Description',
+        //     };
+
+        //     it(`Responds with a 400 when the ${field} is missing`, () => {
+        //         delete newExercise[field];
+
+        //         return supertest(app)
+        //             .post(`/api/routines/${testRoutineId}/exercises`)
+        //             .set('Authorization', helpers.makeAuthHeader(testUser))
+        //             .send(newExercise)
+        //             .expect(400, {
+        //                 error: { message: `Missing ${field} in request body` }
+        //             });
+        //     });
+    });
+});
 });
