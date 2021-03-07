@@ -16,7 +16,13 @@ VALUES
 INSERT INTO games (game_name)
 VALUES
 ('Uno'),
-('Monopoly');
+('Monopoly'),
+('Mao'),
+('Solitare'),
+('Settlers of Catan'),
+('Trouble'),
+('Scrabble'),
+('Yahtzee');
 
 INSERT INTO rules (game_id, rule_title, rule_description, assigned_user)
 VALUES
