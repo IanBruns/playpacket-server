@@ -16,6 +16,15 @@ rulesRouter.route('/')
     .post(jsonBodyParser, (req, res, next) => {
         const { rule_name, rule_description, game_id } = req.body;
         const newRule = { rule_name, rule_description, game_id };
-    )}
+
+        for (const [key, value] of Object.entries(newRule)) {
+            if (value == null || value.length < 1)
+                return res.status(400).json({
+                    error: { message: `Missing ${key} in request body` }
+                });
+        }
+
+        return res.status(204).send([]);
+    });
 
 module.exports = rulesRouter;
