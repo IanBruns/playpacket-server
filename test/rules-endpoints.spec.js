@@ -130,9 +130,9 @@ describe.only(`Reviews Enpoints`, function () {
     });
 
     describe.only('PATCH /api/rules', () => {
-        beforeEach('Seed Users', () => helpers.seedUsers(testUsers));
+        beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
 
-        beforeEach('Seed Games', () => helpers.seedGames(testGames));
+        beforeEach('Seed Games', () => helpers.seedGames(db, testGames));
 
         context('Given no rules in the database', () => {
             it('Returns a 404 with rule not found', () => {
