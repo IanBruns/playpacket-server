@@ -40,6 +40,9 @@ rulesRouter.route('/')
 rulesRouter.route('/:rule_id')
     .all(requireAuth)
     .all(checkValidRule)
+    .patch(jsonBodyParser, (req, res, next) => {
+        return res.status(204).send([]);
+    })
 
 async function checkValidRule(req, res, next) {
     try {

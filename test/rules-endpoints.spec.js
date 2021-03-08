@@ -128,4 +128,27 @@ describe.only(`Reviews Enpoints`, function () {
                 });
         });
     });
+
+    describe.only('PATCH /api/rules', () => {
+        beforeEach('Seed Users', () => helpers.seedUsers(testUsers));
+
+        beforeEach('Seed Games', () => helpers.seedGames(testGames));
+
+        context('Given no rules in the database', () => {
+            it('Returns a 404 with rule not found', () => {
+                const badId = 8675309;
+                const badSend = {
+                    rule_title: 'would be valid...IFFFFFF'
+                };
+
+                return supertest(app)
+                    .patch(`/api/rules/${badId}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .send(badSend)
+                    .expect(404, {
+                        error: { message: `Rule does not exist` }
+                    });
+            });
+        });
+    });
 });
