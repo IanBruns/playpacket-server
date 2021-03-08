@@ -15,11 +15,11 @@ rulesRouter.route('/')
             .catch(next);
     })
     .post(jsonBodyParser, (req, res, next) => {
-        const { rule_name, rule_description, game_id } = req.body;
-        const newRule = { rule_name, rule_description, game_id };
+        const { rule_title, rule_description, game_id } = req.body;
+        const newRule = { rule_title, rule_description, game_id };
 
         for (const [key, value] of Object.entries(newRule)) {
-            if (key !== rule_name && (value == null || value.length < 1))
+            if (key != 'rule_title' && (value == null || value.length < 1))
                 return res.status(400).json({
                     error: { message: `Missing ${key} in request body` }
                 });
@@ -33,7 +33,8 @@ rulesRouter.route('/')
                 return res.status(201)
                     .location(path.posix.join(req.originalUrl, `/${rule.id}`))
                     .json(RulesService.sanitizeUserRule(rule));
-            });
+            })
+            .catch(next);
     });
 
 module.exports = rulesRouter;
