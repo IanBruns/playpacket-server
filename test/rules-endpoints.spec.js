@@ -58,7 +58,7 @@ describe.only(`Reviews Enpoints`, function () {
         });
     });
 
-    describe.only(`POST /api/rules`, () => {
+    describe(`POST /api/rules`, () => {
         beforeEach(`Seed in full`, () => {
             return helpers.seedRules(db, testUsers, testGames, testRules);
         });
