@@ -82,5 +82,36 @@ describe.only(`Reviews Enpoints`, function () {
                     });
             });
         });
+
+        it('returns a 201 and pulls the item in a GET request', () => {
+            const newRule = {
+                rule_name: 'new rule name',
+                rule_description: 'new rule description',
+                game_id: 1
+            };
+
+            return supertest(app)
+                .post('/api/rules')
+                .set('Authorization', helpers.makeAuthHeader(testUser))
+                .send(newRule)
+                .expect(204)
+                .expect(res => {
+                    expect(res.body).to.have.property('id');
+                    expect(res.body.rule_name).to.eql(newRule.rule_name);
+                    expect(res.body.rule_description).to.eql(newRule.rule_description);
+                    expect(res.body.game_id).to.eql(newRule.game_id);
+                })
+                .expect(res => {
+                    return db.from('rules')
+                        .select('*')
+                        .where({ id: res.body.id })
+                        .first()
+                        .then(row => {
+                            expect(row.rule_name).to.eql(newRule.rule_name);
+                            expect(row.rule_description).to.eql(newRule.rule_description);
+                            expect(row.game_id).to.eql(newRule.game_id);
+                        });
+                });
+        });
     });
 });
