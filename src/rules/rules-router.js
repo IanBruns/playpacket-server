@@ -24,6 +24,9 @@ rulesRouter.route('/')
                 });
         }
 
+        newRule.assigned_user = req.user.id;
+        newRule.game_id = parseInt(newRule.game_id);
+
         return res.status(204).send([]);
     });
 

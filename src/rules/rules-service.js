@@ -17,6 +17,8 @@ const RulesService = {
             .from('rules')
             .fullOuterJoin('games', 'games.id', 'rules.game_id')
             .where({ assigned_user: userId });
+    },
+    addNewUserRule(db, rule) {
     }
 };
 
