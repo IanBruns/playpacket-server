@@ -130,11 +130,11 @@ describe.only(`Reviews Enpoints`, function () {
     });
 
     describe.only('PATCH /api/rules', () => {
-        beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
-
-        beforeEach('Seed Games', () => helpers.seedGames(db, testGames));
-
         context('Given no rules in the database', () => {
+            beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
+
+            beforeEach('Seed Games', () => helpers.seedGames(db, testGames));
+
             it('Returns a 404 with rule not found', () => {
                 const badId = 8675309;
                 const badSend = {
@@ -149,6 +149,25 @@ describe.only(`Reviews Enpoints`, function () {
                         error: { message: `Rule does not exist` }
                     });
             });
+        });
+
+        context(`Given Rules in the Database`, () => {
+            beforeEach(`Seed in full`, () => helpers.seedRules(db, testUsers, testGames, testRules));
+
+            it(`Returns a 404 with the rule not found`, () => {
+                const badId = 8675309;
+                const badSend = {
+                    rule_title: 'would be valid...IFFFFFF'
+                };
+
+                return supertest(app)
+                    .patch(`/api/rules/${badId}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .send(badSend)
+                    .expect(404, {
+                        error: { message: `Rule does not exist` }
+                    });
+            })
         });
     });
 });
