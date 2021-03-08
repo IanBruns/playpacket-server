@@ -28,7 +28,7 @@ rulesRouter.route('/')
         newRule.assigned_user = req.user.id;
         newRule.game_id = parseInt(newRule.game_id);
 
-        RulesService.addNewUserRule(req.app.get('db'), newRule)
+        RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
             .then(rule => {
                 return res.status(201)
                     .location(path.posix.join(req.originalUrl, `/${rule.id}`))
@@ -36,5 +36,18 @@ rulesRouter.route('/')
             })
             .catch(next);
     });
+
+// rulesRouter.route('/:rule_id')
+//     .all(requireAuth)
+//     .all(checkValidRule)
+
+// async function checkValidRule(req, res, next) {
+//     try {
+//         const rule = await RulesService.getById(
+//             req.app.get('db'),
+//             parseInt(req.params.rule_id)
+//         )
+//     }
+// }
 
 module.exports = rulesRouter;
