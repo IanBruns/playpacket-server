@@ -37,17 +37,29 @@ rulesRouter.route('/')
             .catch(next);
     });
 
-// rulesRouter.route('/:rule_id')
-//     .all(requireAuth)
-//     .all(checkValidRule)
+rulesRouter.route('/:rule_id')
+    .all(requireAuth)
+    .all(checkValidRule)
 
-// async function checkValidRule(req, res, next) {
-//     try {
-//         const rule = await RulesService.getById(
-//             req.app.get('db'),
-//             parseInt(req.params.rule_id)
-//         )
-//     }
-// }
+async function checkValidRule(req, res, next) {
+    try {
+        const rule = await RulesService.getById(
+            req.app.get('db'),
+            parseInt(req.params.rule_id),
+            req.user.id
+        );
+
+        if (!rule) {
+            return res.status(404).send({
+                error: { message: `Rule does not exist` }
+            })
+        }
+
+        res.rule = rule
+        next();
+    } catch (err) {
+        next(err)
+    }
+}
 
 module.exports = rulesRouter;
