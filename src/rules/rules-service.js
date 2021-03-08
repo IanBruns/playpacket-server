@@ -18,7 +18,18 @@ const RulesService = {
             .fullOuterJoin('games', 'games.id', 'rules.game_id')
             .where({ assigned_user: userId });
     },
-    addNewUserRule(db, rule) {
+    getById(db, assigned_user_id, rule_id) {
+        return RulesService.getUserRules(db, assigned_user_id)
+            .where('id', rule_id)
+            .first();
+    },
+    addNewUserRule(db, newRule) {
+        return db
+            .insert(newRule)
+            .into('rules')
+            .returning('*')
+            .then(([rule]) => rule)
+            .then(rule => RulesService.getById(db, rule.assigned_user, rule.id));
     }
 };
 
