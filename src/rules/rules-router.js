@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const RulesService = require('./rules-service');
 const { requireAuth } = require('../middleware/api-auth');
 const rulesRouter = express.Router();
@@ -27,7 +28,12 @@ rulesRouter.route('/')
         newRule.assigned_user = req.user.id;
         newRule.game_id = parseInt(newRule.game_id);
 
-        return res.status(204).send([]);
+        RulesService.addNewUserRule(req.app.get('db'), newRule)
+            .then(rule => {
+                return res.status(201)
+                    .location(path.posix.join(req.originalUrl, `/${rule.id}`))
+                    .json(RulesService.sanitizeUserRule(rule));
+            });
     });
 
 module.exports = rulesRouter;
