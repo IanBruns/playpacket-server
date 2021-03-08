@@ -72,6 +72,25 @@ function makeRulesArray() {
     ]
 }
 
+function makeMaliciousRule() {
+    const maliciousRule = {
+        rule_title: 'Naughty naughty very naughty <script>alert("xss");</script>',
+        rule_description: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+    };
+    const expectedRule = {
+        ...maliciousRule,
+        rule_title: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
+        rule_description: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
+        game_id: 1,
+        assigned_user: 1,
+    };
+
+    return {
+        maliciousRule,
+        expectedRule,
+    }
+}
+
 function makePlayPacketFixtures() {
     const testUsers = makeUsersArray();
     const testGames = makeGamesArray();
