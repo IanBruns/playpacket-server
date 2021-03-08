@@ -63,7 +63,7 @@ describe.only(`Reviews Enpoints`, function () {
             return helpers.seedRules(db, testUsers, testGames, testRules);
         });
 
-        ['rule_name', 'rule_description', 'game_id'].forEach(field => {
+        ['rule_description', 'game_id'].forEach(field => {
             const newRule = {
                 rule_name: 'new rule name',
                 rule_description: 'new rule description',
