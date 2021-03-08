@@ -113,5 +113,19 @@ describe.only(`Reviews Enpoints`, function () {
                         });
                 });
         });
+
+        it(`Sanitizes an XSS attack`, () => {
+            const { maliciousRule, expectedRule } = helpers.makeMaliciousRule();
+
+            return supertest(app)
+                .post('/api/rules')
+                .set('Authorization', helpers.makeAuthHeader(testUser))
+                .send(maliciousRule)
+                .expect(201)
+                .expect(res => {
+                    expect(res.body.rule_title).to.eql(expectedRule.rule_title);
+                    expect(res.body.rule_description).to.eql(expectedRule.rule_description);
+                });
+        });
     });
 });
