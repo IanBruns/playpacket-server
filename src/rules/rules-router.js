@@ -66,7 +66,7 @@ rulesRouter.route('/:rule_id')
             .catch(next);
     })
     .delete((req, res, next) => {
-        RulesService.deleteRule(req.app.get('db'), res.Rule.id)
+        RulesService.deleteRule(req.app.get('db'), res.rule.id)
             .then(numRowsAffected => {
                 return res.status(204).end();
             })
@@ -79,7 +79,7 @@ rulesRouter.route('/games/:game_id')
         RulesService.getUserRulesForGame(
             req.app.get('db'),
             req.user.id,
-            parseInt(req.params.rule_id)
+            res.rule_id
         )
             .then(rules => {
                 return res.json(rules.map(RulesService.sanitizeUserRule));

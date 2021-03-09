@@ -260,11 +260,27 @@ describe.only(`Reviews Enpoints`, function () {
 
             it('returns a 200 and an empty list', () => {
                 const validId = 1;
-                // const expectedRules = testExpectedRules.filter(rule => rule.assigned_user === testUser.id);
                 return supertest(app)
                     .get(`/api/rules/games/${validId}`)
                     .set('Authorization', helpers.makeAuthHeader(testUser))
                     .expect(200, []);
+            });
+        });
+
+        context('When there are rules in the database', () => {
+            beforeEach('Seed tables in full', () => helpers.seedRules(db, testUsers, testGames, testRules));
+
+            it('returns a 200 and the rules for the associated game', () => {
+                const validId = 1;
+                const expectedRules = testExpectedRules.filter(rule => {
+                    return (rule.assigned_user === testUser.id &&
+                        rule.game_id === validId);
+                });
+
+                return supertest(app)
+                    .get(`/api/rules/games/${validId}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .expect(200, expectedRules);
             });
         });
     });
