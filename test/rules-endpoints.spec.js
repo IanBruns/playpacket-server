@@ -229,5 +229,16 @@ describe.only(`Reviews Enpoints`, function () {
 
     describe.only('DELETE /api/rules/:rule_id', () => {
         beforeEach(`Seed in full`, () => helpers.seedRules(db, testUsers, testGames, testRules));
+
+        it('sends a 404 when trying to delete another players rule', () => {
+            const updateId = 4;
+
+            return supertest(app)
+                .delete(`/api/rules/${updateId}`)
+                .set('Authorization', helpers.makeAuthHeader(testUser))
+                .expect(404, {
+                    error: { message: `Rule does not exist` }
+                });
+        });
     });
 });
