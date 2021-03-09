@@ -76,7 +76,15 @@ rulesRouter.route('/games/:game_id')
     .all(requireAuth)
     .all(checkValidGame)
     .get((req, res, next) => {
-        return res.status(200).send([]);
+        RulesService.getUserRulesForGame(
+            req.app.get('db'),
+            req.user.id,
+            parseInt(req.params.rule_id)
+        )
+            .then(rules => {
+                return res.json(rules.map(RulesService.sanitizeUserRule));
+            })
+            .catch(next);
     })
 
 
