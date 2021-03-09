@@ -129,7 +129,7 @@ describe.only(`Reviews Enpoints`, function () {
         });
     });
 
-    describe.only('PATCH /api/rules', () => {
+    describe('PATCH /api/rules', () => {
         context('Given no rules in the database', () => {
             beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
 
@@ -183,6 +183,32 @@ describe.only(`Reviews Enpoints`, function () {
                         error: { message: 'Body must contain a the rule title or rule description' }
                     });
             });
+
+            it(`Sends a 204 and updates the rule`, () => {
+                const idToUpdate = 1;
+                const ruleUpdate = {
+                    rule_title: 'new rule title',
+                    rule_description: 'new rule description'
+                };
+
+                return supertest(app)
+                    .patch(`/api/rules/${idToUpdate}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .send(ruleUpdate)
+                    .expect(204)
+                    .expect(res => {
+                        return db.from('rules')
+                            .select('*')
+                            .where({ id: idToUpdate })
+                            .first()
+                            .then(row => {
+                                // console.log(row.rule_title);
+                                // console.log(ruleUpdate.rule_title);
+                                expect(row.rule_title).to.eql(ruleUpdate.rule_title);
+                                expect(row.rule_description).to.eql(ruleUpdate.rule_description);
+                            });
+                    });
+            })
         });
     });
 });
