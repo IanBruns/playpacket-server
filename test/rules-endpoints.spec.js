@@ -8,6 +8,7 @@ describe.only(`Reviews Enpoints`, function () {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
+    const testExpectedRules = helpers.createTestExpectedRules();
     const testUser = testUsers[0];
 
     before(`Make knex instance`, () => {
@@ -248,6 +249,23 @@ describe.only(`Reviews Enpoints`, function () {
                 .delete(`/api/rules/${idToDelete}`)
                 .set('Authorization', helpers.makeAuthHeader(testUser))
                 .expect(204);
+        });
+    });
+
+    describe.only('GET /api/rules/:game_id', () => {
+        context('When there are no rules', () => {
+            beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
+
+            beforeEach('Seed Games', () => helpers.seedGames(db, testGames));
+
+            it('returns a 200 and an empty list', () => {
+                const validId = 1;
+                // const expectedRules = testExpectedRules.filter(rule => rule.assigned_user === testUser.id);
+                return supertest(app)
+                    .get(`/api/rules/games/${validId}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .expect(200, []);
+            });
         });
     });
 });

@@ -72,8 +72,12 @@ rulesRouter.route('/:rule_id')
             })
     })
 
-rulesRouter.route(':/game_id')
+rulesRouter.route('/games/:game_id')
     .all(requireAuth)
+    .all(checkValidGame)
+    .get((req, res, next) => {
+        return res.status(200).send([]);
+    })
 
 
 async function checkValidRule(req, res, next) {
@@ -99,7 +103,7 @@ async function checkValidRule(req, res, next) {
 
 async function checkValidGame(req, res, next) {
     try {
-        const rule = await RulesService.getGameById(
+        const game = await RulesService.getGameById(
             req.app.get('db'),
             parseInt(req.params.game_id),
         );
