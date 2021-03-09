@@ -227,7 +227,7 @@ describe.only(`Reviews Enpoints`, function () {
         });
     });
 
-    describe.only('DELETE /api/rules/:rule_id', () => {
+    describe('DELETE /api/rules/:rule_id', () => {
         beforeEach(`Seed in full`, () => helpers.seedRules(db, testUsers, testGames, testRules));
 
         it('sends a 404 when trying to delete another players rule', () => {
@@ -239,6 +239,15 @@ describe.only(`Reviews Enpoints`, function () {
                 .expect(404, {
                     error: { message: `Rule does not exist` }
                 });
+        });
+
+        it('Sends a 204 and removes the exercises', () => {
+            const idToDelete = 1;
+
+            supertest(app)
+                .delete(`/api/rules/${idToDelete}`)
+                .set('Authorization', helpers.makeAuthHeader(testUser))
+                .expect(204);
         });
     });
 });

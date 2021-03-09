@@ -40,7 +40,13 @@ const RulesService = {
             .from('rules')
             .where({ id: rule_id })
             .update(fieldsToUpdate);
-    }
+    },
+    deleteRule(db, rule_id) {
+        return db
+            .from('rules')
+            .where({ id: rule_id })
+            .delete();
+    },
 };
 
 module.exports = RulesService;

@@ -66,7 +66,10 @@ rulesRouter.route('/:rule_id')
             .catch(next);
     })
     .delete((req, res, next) => {
-
+        RulesService.deleteRule(req.app.get('db'), res.Rule.id)
+            .then(numRowsAffected => {
+                return res.status(204).end();
+            })
     })
 
 async function checkValidRule(req, res, next) {
