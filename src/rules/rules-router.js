@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const RulesService = require('./rules-service');
+const xss = require('xss');
 const { requireAuth } = require('../middleware/api-auth');
 const rulesRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -50,6 +51,9 @@ rulesRouter.route('/:rule_id')
                 error: { message: 'Body must contain a the rule title or rule description' }
             })
         }
+
+        fieldsToUpdate.rule_title = xss(fieldsToUpdate.rule_title);
+        fieldsToUpdate.rule_description = xss(fieldsToUpdate.rule_description);
 
         RulesService.updateUserRule(
             req.app.get('db'),
