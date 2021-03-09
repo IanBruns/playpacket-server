@@ -27,6 +27,13 @@ const RulesService = {
             .andWhere('rules.assigned_user', assigned_user_id)
             .first();
     },
+    getGameById(db, game_id) {
+        return db
+            .select('*')
+            .from('games')
+            .where('games.id', game_id)
+            .first();
+    },
     addNewUserRule(db, newRule, assigned_user_id) {
         return db
             .insert(newRule)

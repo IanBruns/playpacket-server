@@ -72,6 +72,10 @@ rulesRouter.route('/:rule_id')
             })
     })
 
+rulesRouter.route(':/game_id')
+    .all(requireAuth)
+
+
 async function checkValidRule(req, res, next) {
     try {
         const rule = await RulesService.getById(
@@ -92,5 +96,26 @@ async function checkValidRule(req, res, next) {
         next(err)
     }
 }
+
+async function checkValidGame(req, res, next) {
+    try {
+        const rule = await RulesService.getGameById(
+            req.app.get('db'),
+            parseInt(req.params.game_id),
+        );
+
+        if (!game) {
+            return res.status(404).send({
+                error: { message: `Game does not exist` }
+            })
+        }
+
+        res.game = game;
+        next();
+    } catch (err) {
+        next(err)
+    }
+}
+
 
 module.exports = rulesRouter;
