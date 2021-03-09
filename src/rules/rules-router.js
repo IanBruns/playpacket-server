@@ -41,6 +41,14 @@ rulesRouter.route('/:rule_id')
     .all(requireAuth)
     .all(checkValidRule)
     .patch(jsonBodyParser, (req, res, next) => {
+        const { rule_title, rule_description } = req.body;
+        const updateRule = { rule_title, rule_description };
+
+        if (!updateRule.rule_description || updateRule.rule_title) {
+            return res.status(400).json({
+                error: { message: 'Body must contain a the rule title or rule description' }
+            })
+        }
         return res.status(204).send([]);
     })
 

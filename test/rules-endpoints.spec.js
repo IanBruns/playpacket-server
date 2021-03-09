@@ -151,7 +151,7 @@ describe.only(`Reviews Enpoints`, function () {
             });
         });
 
-        context(`Given Rules in the Database`, () => {
+        context.only(`Given Rules in the Database`, () => {
             beforeEach(`Seed in full`, () => helpers.seedRules(db, testUsers, testGames, testRules));
 
             it(`Returns a 404 with the rule not found`, () => {
@@ -167,7 +167,22 @@ describe.only(`Reviews Enpoints`, function () {
                     .expect(404, {
                         error: { message: `Rule does not exist` }
                     });
-            })
+            });
+
+            it('Rejects with 400 when nothing to update is sent', () => {
+                const idToUpdate = 1;
+                const badUpdate = {
+                    best_musical_artist: 'Carly Rae Jepsen'
+                };
+
+                return supertest(app)
+                    .patch(`/api/rules/${idToUpdate}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .send(badUpdate)
+                    .expect(400, {
+                        error: { message: 'Body must contain a the rule title or rule description' }
+                    });
+            });
         });
     });
 });
