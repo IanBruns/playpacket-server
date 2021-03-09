@@ -72,6 +72,31 @@ function makeRulesArray() {
     ]
 }
 
+function makeUsersGamesArray() {
+    return [
+        {
+            id: 1,
+            user_id: 1,
+            games_id: 1
+        },
+        {
+            id: 2,
+            user_id: 1,
+            games_id: 2
+        },
+        {
+            id: 3,
+            user_id: 2,
+            games_id: 1
+        },
+        {
+            id: 4,
+            user_id: 3,
+            games_id: 3
+        },
+    ];
+}
+
 function makeMaliciousRule() {
     const maliciousRule = {
         rule_title: 'Naughty naughty very naughty <script>alert("xss");</script>',
@@ -144,10 +169,23 @@ function seedGames(db, games) {
         });
 }
 
+function seedUsersGames(db) {
+    const usersGames = makeUsersGamesArray();
+
+    return db.into('usersgames').insert(usersGames)
+        .then(() => {
+            db.raw(
+                `SELECT setval('usersgames_id_seq', ?)`,
+                [usersGames[usersGames.length - 1].id],
+            );
+        });
+}
+
 function seedRules(db, users, games, rules) {
     return db.transaction(async trx => {
         await seedUsers(trx, users);
         await seedGames(trx, games);
+        await seedUsersGames(trx);
         await trx.into('rules').insert(rules)
         await trx.raw(
             `SELECT setval('rules_id_seq', ?)`,

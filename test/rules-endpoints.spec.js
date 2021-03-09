@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe(`Reviews Enpoints`, function () {
+describe.only(`Reviews Enpoints`, function () {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
@@ -59,7 +59,7 @@ describe(`Reviews Enpoints`, function () {
         });
     });
 
-    describe(`POST /api/rules`, () => {
+    describe.only(`POST /api/rules`, () => {
         beforeEach(`Seed in full`, () => {
             return helpers.seedRules(db, testUsers, testGames, testRules);
         });

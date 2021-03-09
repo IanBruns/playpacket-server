@@ -25,17 +25,32 @@ rulesRouter.route('/')
                     error: { message: `Missing ${key} in request body` }
                 });
         }
-
-        newRule.assigned_user = req.user.id;
         newRule.game_id = parseInt(newRule.game_id);
 
-        RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
-            .then(rule => {
-                return res.status(201)
-                    .location(path.posix.join(req.originalUrl, `/${rule.id}`))
-                    .json(RulesService.sanitizeUserRule(rule));
+        RulesService.getGameById(
+            req.app.get('db'),
+            newRule.game_id
+        )
+            .then(game => {
+                if (!game) {
+                    return res.status(404).send({
+                        error: { message: `Game does not exist` }
+                    })
+                }
+
+                //check to see if the game is already in the usersgames table
+                //if not, add it
+
+                newRule.assigned_user = req.user.id;
+
+                RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
+                    .then(rule => {
+                        return res.status(201)
+                            .location(path.posix.join(req.originalUrl, `/${rule.id}`))
+                            .json(RulesService.sanitizeUserRule(rule));
+                    })
+                    .catch(next);
             })
-            .catch(next);
     });
 
 rulesRouter.route('/:rule_id')
