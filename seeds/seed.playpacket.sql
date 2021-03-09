@@ -34,4 +34,11 @@ takes the pot', 1),
 (2, 'Double Go', 'A Player receives $400 for landing DIRECTLY ON Go.', 1),
 (2, null, 'When in jail, a player cannot collect any rent money from other players.', 2);
 
+INSERT INTO usersgames (user_id, game_id)
+VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 2);
+
 COMMIT;
