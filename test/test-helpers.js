@@ -77,22 +77,22 @@ function makeUsersGamesArray() {
         {
             id: 1,
             user_id: 1,
-            games_id: 1
+            game_id: 1
         },
         {
             id: 2,
             user_id: 1,
-            games_id: 2
+            game_id: 2
         },
         {
             id: 3,
             user_id: 2,
-            games_id: 1
+            game_id: 1
         },
         {
             id: 4,
             user_id: 3,
-            games_id: 3
+            game_id: 3
         },
     ];
 }
@@ -127,6 +127,7 @@ function cleanTables(db) {
     return db.transaction(async trx =>
         await trx.raw(
             `TRUNCATE
+            usersgames,
                 rules,
                 games,
                 users
