@@ -129,7 +129,7 @@ describe.only(`Reviews Enpoints`, function () {
         });
     });
 
-    describe('PATCH /api/rules', () => {
+    describe('PATCH /api/rules/:rule_id', () => {
         context('Given no rules in the database', () => {
             beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
 
@@ -151,7 +151,7 @@ describe.only(`Reviews Enpoints`, function () {
             });
         });
 
-        context.only(`Given Rules in the Database`, () => {
+        context(`Given Rules in the Database`, () => {
             beforeEach(`Seed in full`, () => helpers.seedRules(db, testUsers, testGames, testRules));
 
             it(`Returns a 404 with the rule not found`, () => {
@@ -208,7 +208,26 @@ describe.only(`Reviews Enpoints`, function () {
                                 expect(row.rule_description).to.eql(ruleUpdate.rule_description);
                             });
                     });
-            })
+            });
+
+            it('sends a 404 when trying to edit another players rule', () => {
+                const updateId = 4;
+                const validUpdate = {
+                    rule_description: 'Hol up a minute'
+                };
+
+                return supertest(app)
+                    .patch(`/api/rules/${updateId}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .send(validUpdate)
+                    .expect(404, {
+                        error: { message: `Rule does not exist` }
+                    });
+            });
         });
+    });
+
+    describe.only('DELETE /api/rules/:rule_id', () => {
+        beforeEach(`Seed in full`, () => helpers.seedRules(db, testUsers, testGames, testRules));
     });
 });

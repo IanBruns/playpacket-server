@@ -60,10 +60,13 @@ rulesRouter.route('/:rule_id')
             res.rule.id,
             fieldsToUpdate
         )
-            .then(numrowsaffected => {
+            .then(numRowsaffected => {
                 return res.status(204).end();
             })
             .catch(next);
+    })
+    .delete((req, res, next) => {
+
     })
 
 async function checkValidRule(req, res, next) {
