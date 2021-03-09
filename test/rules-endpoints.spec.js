@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe.only(`Reviews Enpoints`, function () {
+describe(`Reviews Enpoints`, function () {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
@@ -245,14 +245,14 @@ describe.only(`Reviews Enpoints`, function () {
         it('Sends a 204 and removes the exercises', () => {
             const idToDelete = 1;
 
-            supertest(app)
+            return supertest(app)
                 .delete(`/api/rules/${idToDelete}`)
                 .set('Authorization', helpers.makeAuthHeader(testUser))
                 .expect(204);
         });
     });
 
-    describe.only('GET /api/rules/:game_id', () => {
+    describe('GET /api/rules/:game_id', () => {
         context('When there are no rules', () => {
             beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
 
