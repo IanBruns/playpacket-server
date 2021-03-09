@@ -79,7 +79,7 @@ rulesRouter.route('/games/:game_id')
         RulesService.getUserRulesForGame(
             req.app.get('db'),
             req.user.id,
-            res.rule_id
+            res.game.id
         )
             .then(rules => {
                 return res.json(rules.map(RulesService.sanitizeUserRule));
