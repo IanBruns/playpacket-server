@@ -34,6 +34,12 @@ const RulesService = {
             .returning('*')
             .then(([rule]) => rule)
             .then(rule => RulesService.getById(db, rule.id, assigned_user_id));
+    },
+    updateUserRule(db, rule_id, fieldsToUpdate) {
+        return db
+            .from('rules')
+            .where({ id: rule_id })
+            .update(fieldsToUpdate);
     }
 };
 

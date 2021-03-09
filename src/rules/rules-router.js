@@ -50,7 +50,16 @@ rulesRouter.route('/:rule_id')
                 error: { message: 'Body must contain a the rule title or rule description' }
             })
         }
-        return res.status(204).send([]);
+
+        RulesService.updateUserRule(
+            req.app.get('db'),
+            res.rule.id,
+            fieldsToUpdate
+        )
+            .then(numrowsaffected => {
+                return res.status(204).end();
+            })
+            .catch(next);
     })
 
 async function checkValidRule(req, res, next) {
