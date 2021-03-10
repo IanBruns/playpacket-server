@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe(`Reviews Enpoints`, function () {
+describe.only(`Reviews Enpoints`, function () {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
@@ -252,7 +252,7 @@ describe(`Reviews Enpoints`, function () {
         });
     });
 
-    describe('GET /api/rules/:game_id', () => {
+    describe('GET /api/rules/games/:game_id', () => {
         context('When there are no rules', () => {
             beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
 
@@ -279,6 +279,52 @@ describe(`Reviews Enpoints`, function () {
 
                 return supertest(app)
                     .get(`/api/rules/games/${validId}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .expect(200, expectedRules);
+            });
+        });
+    });
+
+    describe.only('/search/:game_id', () => {
+        context('When the id is invalid', () => {
+            beforeEach('Seed tables in full', () => helpers.seedRules(db, testUsers, testGames, testRules));
+
+            it('Returns a 404 with appropriate error ', () => {
+                const badId = 80772;
+
+                return supertest(app)
+                    .get(`/api/rules/search/${badId}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .expect(404, {
+                        error: { message: `Game does not exist` }
+                    });
+            })
+        });
+
+        context('When there are no rules in the database', () => {
+            beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
+
+            beforeEach('Seed Games', () => helpers.seedGames(db, testGames));
+
+            it('returns a 200 and an empty array', () => {
+                const getId = 1;
+
+                return supertest(app)
+                    .get(`/api/rules/search/${getId}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .expect(200, []);
+            });
+        });
+
+        context('When there are rules in the database', () => {
+            beforeEach('Seed tables in full', () => helpers.seedRules(db, testUsers, testGames, testRules));
+
+            it('returns a 200 rules for the game', () => {
+                const getId = 3;
+                const expectedRules = testRules.filter(rule => rule.game_id === getId);
+
+                return supertest(app)
+                    .get(`/api/rules/search/${getId}`)
                     .set('Authorization', helpers.makeAuthHeader(testUser))
                     .expect(200, expectedRules);
             });

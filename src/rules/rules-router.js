@@ -114,6 +114,17 @@ rulesRouter.route('/games/:game_id')
             .catch(next);
     })
 
+rulesRouter.route('/search/:game_id')
+    .get(requireAuth, checkValidGame, (req, res, next) => {
+        RulesService.getSearchRules(req.app.get('db'),
+            req.user.id,
+            res.game.id)
+            .then(rules => {
+                return res.json(rules.map(RulesService.sanitizeUserRule));
+            })
+            .catch(next);
+    })
+
 
 async function checkValidRule(req, res, next) {
     try {
