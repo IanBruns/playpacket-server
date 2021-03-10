@@ -10,7 +10,15 @@ gamesRouter.route('/')
         GamesService.getUserGames(req.app.get('db'), req.user.id)
             .then(games => {
                 return res.status(200).json(games);
-            })
-    })
+            });
+    });
+
+gamesRouter.route('/all')
+    .get((req, res, next) => {
+        GamesService.getAllGames(req.app.get('db'))
+            .then(games => {
+                return res.status(200).json(games);
+            });
+    });
 
 module.exports = gamesRouter;

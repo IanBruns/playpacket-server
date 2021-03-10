@@ -6,6 +6,10 @@ const GamesService = {
             .from('usersgames')
             .innerJoin('games', 'usersgames.game_id', 'games.id')
             .where({ user_id });
+    },
+    getAllGames(db) {
+        return db.select('*')
+            .from('games');
     }
 };
 
