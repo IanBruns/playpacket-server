@@ -7,5 +7,6 @@ const GamesService = {
             .innerJoin('games', 'usersgames.game_id', 'games.id')
             .where({ user_id });
     }
-}
+};
+
 module.exports = GamesService;

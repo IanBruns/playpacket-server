@@ -49,7 +49,7 @@ describe.only('/api/games endpoints', () => {
                     .get('/api/games/')
                     .set('Authorization', helpers.makeAuthHeader(testUser))
                     .expect(200, expectedGames);
-            })
+            });
         });
     });
 });
