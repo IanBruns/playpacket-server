@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe.only(`Reviews Enpoints`, function () {
+describe(`Reviews Enpoints`, function () {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
@@ -285,7 +285,7 @@ describe.only(`Reviews Enpoints`, function () {
         });
     });
 
-    describe.only('/search/:game_id', () => {
+    describe('/search/:game_id', () => {
         context('When the id is invalid', () => {
             beforeEach('Seed tables in full', () => helpers.seedRules(db, testUsers, testGames, testRules));
 
