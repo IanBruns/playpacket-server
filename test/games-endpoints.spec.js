@@ -27,7 +27,7 @@ describe.only('/api/games endpoints', () => {
 
     afterEach('cleanup', () => helpers.cleanTables(db));
 
-    describe.only('GET /api/games', () => {
+    describe('GET /api/games', () => {
         context('When no games are rules are in the database', () => {
             beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
 
@@ -50,6 +50,16 @@ describe.only('/api/games endpoints', () => {
                     .set('Authorization', helpers.makeAuthHeader(testUser))
                     .expect(200, expectedGames);
             });
+        });
+    });
+
+    describe('GET /api/games/all', () => {
+        beforeEach('Seed in full', () => helpers.seedRules(db, testUsers, testGames, testRules));
+
+        it('Pulls a 200 and all games', () => {
+            return supertest(app)
+                .get('/api/games/all')
+                .expect(200, testGames);
         });
     });
 });
