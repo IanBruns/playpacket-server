@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe('/api/games endpoints', () => {
+describe.only('/api/games endpoints', () => {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
