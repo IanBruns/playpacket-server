@@ -41,6 +41,20 @@ rulesRouter.route('/')
                 //check to see if the game is already in the usersgames table
                 //if not, add it
 
+                RulesService.pullGameAssignedToUser(
+                    req.app.get('db'),
+                    req.user.id,
+                    res.game.id
+                )
+                    .then(inTable => {
+                        if (!inTable) {
+                            RulesService.insertIntoUsersGames({
+                                user_id: req.user.id,
+                                game_id: res.game.id
+                            })
+                        }
+                    })
+
                 newRule.assigned_user = req.user.id;
 
                 RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
@@ -51,6 +65,7 @@ rulesRouter.route('/')
                     })
                     .catch(next);
             })
+            .catch(next);
     });
 
 rulesRouter.route('/:rule_id')

@@ -61,6 +61,19 @@ const RulesService = {
             .where({ id: rule_id })
             .delete();
     },
+    pullGameAssignedToUser(db, user_id, game_id) {
+        return db
+            .select('*')
+            .from('usersgames')
+            .where({ user_id })
+            .andWhere({ game_id });
+    },
+    insertIntoUsersGames(items) {
+        return db
+            .insert(items)
+            .into('usersgames')
+            .returning('*');
+    }
 };
 
 module.exports = RulesService;
