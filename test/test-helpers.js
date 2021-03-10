@@ -5,17 +5,17 @@ const xss = require('xss');
 function makeUsersArray() {
     return [
         {
-            usersId: 1,
+            usersid: 1,
             user_name: 'Test-user-1',
             password: 'password1',
         },
         {
-            usersId: 2,
+            usersid: 2,
             user_name: 'Test-user-2',
             password: 'password2',
         },
         {
-            usersId: 3,
+            usersid: 3,
             user_name: 'Test-user-3',
             password: 'password3',
         },
@@ -25,15 +25,15 @@ function makeUsersArray() {
 function makeGamesArray() {
     return [
         {
-            gamesId: 1,
+            gamesid: 1,
             game_name: 'game 1'
         },
         {
-            gamesId: 2,
+            gamesid: 2,
             game_name: 'game 2'
         },
         {
-            gamesId: 3,
+            gamesid: 3,
             game_name: 'game 3'
         }
     ];
@@ -42,28 +42,28 @@ function makeGamesArray() {
 function makeRulesArray() {
     return [
         {
-            rulesId: 1,
+            rulesid: 1,
             game_id: 1,
             rule_title: 'title 1',
             rule_description: 'description 1',
             assigned_user: 1
         },
         {
-            rulesId: 2,
+            rulesid: 2,
             game_id: 1,
             rule_title: 'title 2',
             rule_description: 'description 2',
             assigned_user: 2
         },
         {
-            rulesId: 3,
+            rulesid: 3,
             game_id: 2,
             rule_title: 'title 3',
             rule_description: 'description 3',
             assigned_user: 1
         },
         {
-            rulesId: 4,
+            rulesid: 4,
             game_id: 3,
             rule_title: 'title 4',
             rule_description: 'description 4',
@@ -75,22 +75,22 @@ function makeRulesArray() {
 function makeUsersGamesArray() {
     return [
         {
-            usersgamesId: 1,
+            usersgamesid: 1,
             user_id: 1,
             game_id: 1
         },
         {
-            usersgamesId: 2,
+            usersgamesid: 2,
             user_id: 1,
             game_id: 2
         },
         {
-            usersgamesId: 3,
+            usersgamesid: 3,
             user_id: 2,
             game_id: 1
         },
         {
-            usersgamesId: 4,
+            usersgamesid: 4,
             user_id: 3,
             game_id: 3
         },
@@ -152,12 +152,12 @@ function cleanTables(db) {
         )
             .then(() =>
                 Promise.all([
-                    trx.raw(`ALTER SEQUENCE rules_rulesId_seq minvalue 0 START WITH 1`),
-                    trx.raw(`ALTER SEQUENCE games_gamesId_seq minvalue 0 START WITH 1`),
-                    trx.raw(`ALTER SEQUENCE users_usersId_seq minvalue 0 START WITH 1`),
-                    trx.raw(`SELECT setval('rules_rulesId_seq', 0)`),
-                    trx.raw(`SELECT setval('games_gamesId_seq', 0)`),
-                    trx.raw(`SELECT setval('users_usersId_seq', 0)`),
+                    trx.raw(`ALTER SEQUENCE rules_rulesid_seq minvalue 0 START WITH 1`),
+                    trx.raw(`ALTER SEQUENCE games_gamesid_seq minvalue 0 START WITH 1`),
+                    trx.raw(`ALTER SEQUENCE users_usersid_seq minvalue 0 START WITH 1`),
+                    trx.raw(`SELECT setval('rules_rulesid_seq', 0)`),
+                    trx.raw(`SELECT setval('games_gamesid_seq', 0)`),
+                    trx.raw(`SELECT setval('users_usersid_seq', 0)`),
                 ])
             )
     )
@@ -172,8 +172,8 @@ function seedUsers(db, users) {
     return db.into('users').insert(preppedUsers)
         .then(() =>
             db.raw(
-                `SELECT setval('users_usersId_seq', ?)`,
-                [users[users.length - 1].id],
+                `SELECT setval('users_usersid_seq', ?)`,
+                [users[users.length - 1].usersid],
             ));
 }
 
@@ -181,8 +181,8 @@ function seedGames(db, games) {
     return db.into('games').insert(games)
         .then(() => {
             db.raw(
-                `SELECT setval('games_gamesId_seq', ?)`,
-                [games[games.length - 1].id],
+                `SELECT setval('games_gamesid_seq', ?)`,
+                [games[games.length - 1].gamesid],
             );
         });
 }
@@ -193,8 +193,8 @@ function seedUsersGames(db) {
     return db.into('usersgames').insert(usersGames)
         .then(() => {
             db.raw(
-                `SELECT setval('usersgames_usersgamesId_seq', ?)`,
-                [usersGames[usersGames.length - 1].id],
+                `SELECT setval('usersgames_usersgamesid_seq', ?)`,
+                [usersGames[usersGames.length - 1].usersgamesid],
             );
         });
 }
@@ -206,7 +206,7 @@ function seedRules(db, users, games, rules) {
         await seedUsersGames(trx);
         await trx.into('rules').insert(rules)
         await trx.raw(
-            `SELECT setval('rules_rulesId_seq', ?)`,
+            `SELECT setval('rules_rulesid_seq', ?)`,
             [rules[rules.length - 1].id],
         )
     })
@@ -215,13 +215,13 @@ function seedRules(db, users, games, rules) {
 function makeExpectedRulesForUser(db, user) {
     return db.select('*')
         .from('rules')
-        .fullOuterJoin('games', 'games.gamesId', 'rules.game_id')
-        .where({ assigned_user: user.usersId })
+        .fullOuterJoin('games', 'games.gamesid', 'rules.game_id')
+        .where({ assigned_user: user.id })
 }
 
 function sanitizeRules(rule) {
     return {
-        id: rule.rulesId,
+        id: rule.rulesid,
         game_id: rule.game_id,
         game_name: xss(rule.game_name),
         rule_title: xss(rule.rule_title),
@@ -233,7 +233,7 @@ function sanitizeRules(rule) {
 function createTestExpectedRules() {
     return [
         {
-            rulesId: 1,
+            rulesid: 1,
             game_id: 1,
             game_name: 'game 1',
             rule_title: 'title 1',
@@ -241,7 +241,7 @@ function createTestExpectedRules() {
             assigned_user: 1
         },
         {
-            rulesId: 2,
+            rulesid: 2,
             game_id: 1,
             game_name: 'game 1',
             rule_title: 'title 2',
@@ -249,7 +249,7 @@ function createTestExpectedRules() {
             assigned_user: 2
         },
         {
-            rulesId: 3,
+            rulesid: 3,
             game_id: 2,
             game_name: 'game 2',
             rule_title: 'title 3',
@@ -257,7 +257,7 @@ function createTestExpectedRules() {
             assigned_user: 1
         },
         {
-            rulesId: 4,
+            rulesid: 4,
             game_id: 3,
             game_name: 'game 3',
             rule_title: 'title 4',
