@@ -97,6 +97,23 @@ function makeUsersGamesArray() {
     ];
 }
 
+function makeExpectedGames() {
+    return [
+        {
+            id: 1,
+            user_id: 1,
+            game_id: 1,
+            game_name: 'game 1'
+        },
+        {
+            id: 2,
+            user_id: 1,
+            game_id: 2,
+            game_name: 'game 2',
+        },
+    ]
+}
+
 function makeMaliciousRule() {
     const maliciousRule = {
         rule_title: 'Naughty naughty very naughty <script>alert("xss");</script>',
@@ -270,4 +287,5 @@ module.exports = {
     sanitizeRules,
     createTestExpectedRules,
     makeAuthHeader,
+    makeExpectedGames
 }

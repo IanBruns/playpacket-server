@@ -8,6 +8,7 @@ const { NODE_ENV } = require('./config');
 const authRouter = require('./auth/auth-router');
 const usersRouter = require('./users/users-router');
 const rulesRouter = require('./rules/rules-router');
+const gamesRouter = require('./games/games-router');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(cors());
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/rules', rulesRouter);
+app.use('/api/games', gamesRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello, world!');

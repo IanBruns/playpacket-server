@@ -11,9 +11,45 @@ describe.only('/api/games endpoints', () => {
     const testExpectedRules = helpers.createTestExpectedRules();
     const testUser = testUsers[0];
 
+
+    before(`Make knex instance`, () => {
+        db = knex({
+            client: 'pg',
+            connection: process.env.TEST_DATABASE_URL,
+        });
+
+        app.set('db', db);
+    });
+
     after('disconnect from db', () => db.destroy());
 
     before('cleanup', () => helpers.cleanTables(db));
 
     afterEach('cleanup', () => helpers.cleanTables(db));
+
+    describe.only('GET /api/games', () => {
+        context('When no games are rules are in the database', () => {
+            beforeEach('Seed Users', () => helpers.seedUsers(db, testUsers));
+
+            it('Returns a 200 and empty array', () => {
+                return supertest(app)
+                    .get('/api/games/')
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .expect(200, []);
+            });
+        });
+
+        context('When then are rules in the database', () => {
+            beforeEach('Seed in full', () => helpers.seedRules(db, testUsers, testGames, testRules));
+
+            it('Returns a 200 and the tests users games', () => {
+                const expectedGames = helpers.makeExpectedGames();
+
+                return supertest(app)
+                    .get('/api/games/')
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .expect(200, expectedGames);
+            })
+        });
+    });
 });

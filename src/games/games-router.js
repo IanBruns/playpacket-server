@@ -7,5 +7,7 @@ const gamesRouter = express.Router();
 gamesRouter.route('/')
     .all(requireAuth)
     .get((req, res, next) => {
-
+        return res.status(200).send([]);
     })
+
+module.exports = gamesRouter;
