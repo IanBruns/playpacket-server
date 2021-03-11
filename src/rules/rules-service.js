@@ -14,31 +14,30 @@ const RulesService = {
     },
     getUserRules(db, userId) {
         return db.select('*')
-            .from('rules')
-            .fullOuterJoin('games', 'games.id', 'rules.game_id')
+            .from('rules as r')
+            .fullOuterJoin('games as g', 'g.id', 'r.game_id')
             .where({ assigned_user: userId });
     },
     getUserRulesForGame(db, userId, gameId) {
-        return db.select('*')
-            .from('rules')
-            .fullOuterJoin('games', 'games.id', 'rules.game_id')
+        return db.select('r.*', 'g.game_name')
+            .from('rules as r')
+            .fullOuterJoin('games as g', 'g.id', 'r.game_id')
             .where({ assigned_user: userId })
             .andWhere({ game_id: gameId });
     },
     getSearchRules(db, userId, game_id) {
-        return db.select('*')
-            .from('rules')
-            .fullOuterJoin('games', 'games.id', 'rules.game_id')
+        return db.select('r.*', 'g.game_name')
+            .from('rules as r')
+            .fullOuterJoin('games as g', 'g.id', 'r.game_id')
             .where({ game_id })
             .whereNot({ assigned_user: userId });
     },
     getById(db, rule_id, assigned_user_id) {
-        return db
-            .select('*')
-            .from('rules')
-            .fullOuterJoin('games', 'games.id', 'rules.game_id')
-            .where('rules.id', rule_id)
-            .andWhere('rules.assigned_user', assigned_user_id)
+        return db.select('r.*', 'g.game_name')
+            .from('rules as r')
+            .fullOuterJoin('games as g', 'g.id', 'r.game_id')
+            .where('r.id', rule_id)
+            .andWhere('r.assigned_user', assigned_user_id)
             .first();
     },
     getGameById(db, game_id) {

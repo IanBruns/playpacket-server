@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe.only(`Reviews Enpoints`, function () {
+describe(`Reviews Enpoints`, function () {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
@@ -50,6 +50,39 @@ describe.only(`Reviews Enpoints`, function () {
                     });
             });
         });
+
+        context('When the user has no rules in this game', () => {
+            it('returns a 201 and pulls the item in a GET request', () => {
+                const newRule = {
+                    rule_title: 'new rule name',
+                    rule_description: 'new rule description',
+                    game_id: 3
+                };
+
+                return supertest(app)
+                    .post('/api/rules')
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .send(newRule)
+                    .expect(201)
+                    .expect(res => {
+                        expect(res.body).to.have.property('id');
+                        expect(res.body.rule_title).to.eql(newRule.rule_title);
+                        expect(res.body.rule_description).to.eql(newRule.rule_description);
+                        expect(res.body.game_id).to.eql(newRule.game_id);
+                    })
+                    .then(res => {
+                        return db.from('rules')
+                            .select('*')
+                            .where({ id: res.body.id })
+                            .first()
+                            .then(row => {
+                                expect(row.rule_title).to.eql(newRule.rule_title);
+                                expect(row.rule_description).to.eql(newRule.rule_description);
+                                expect(row.game_id).to.eql(newRule.game_id);
+                            });
+                    });
+            });
+        })
 
         it('returns a 201 and pulls the item in a GET request', () => {
             const newRule = {
@@ -164,14 +197,12 @@ describe.only(`Reviews Enpoints`, function () {
                     .set('Authorization', helpers.makeAuthHeader(testUser))
                     .send(ruleUpdate)
                     .expect(204)
-                    .expect(res => {
+                    .then(res => {
                         return db.from('rules')
                             .select('*')
                             .where({ id: idToUpdate })
                             .first()
                             .then(row => {
-                                // console.log(row.rule_title);
-                                // console.log(ruleUpdate.rule_title);
                                 expect(row.rule_title).to.eql(ruleUpdate.rule_title);
                                 expect(row.rule_description).to.eql(ruleUpdate.rule_description);
                             });
@@ -252,7 +283,7 @@ describe.only(`Reviews Enpoints`, function () {
         });
     });
 
-    describe.only('/search/:game_id', () => {
+    describe('/search/:game_id', () => {
         context('When the id is invalid', () => {
             beforeEach('Seed tables in full', () => helpers.seedRules(db, testUsers, testGames, testRules));
 

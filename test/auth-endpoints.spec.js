@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe.only('Auth Endpoints', function () {
+describe('Auth Endpoints', function () {
     let db;
 
     const { testUsers } = helpers.makePlayPacketFixtures();

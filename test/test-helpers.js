@@ -75,7 +75,14 @@ function makeRulesArray() {
             rule_title: 'title 5',
             rule_description: 'description 5',
             assigned_user: 2
-        }
+        },
+        {
+            id: 6,
+            game_id: 1,
+            rule_title: 'title 6',
+            rule_description: 'description 6',
+            assigned_user: 1
+        },
     ]
 }
 
@@ -260,7 +267,15 @@ function createTestExpectedRules() {
             rule_title: 'title 5',
             rule_description: 'description 5',
             assigned_user: 2
-        }
+        },
+        {
+            id: 6,
+            game_id: 1,
+            game_name: 'game 1',
+            rule_title: 'title 6',
+            rule_description: 'description 6',
+            assigned_user: 1
+        },
     ]
 }
 
