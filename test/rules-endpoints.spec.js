@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe(`Reviews Enpoints`, function () {
+describe.only(`Reviews Enpoints`, function () {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
@@ -25,39 +25,6 @@ describe(`Reviews Enpoints`, function () {
     before('cleanup', () => helpers.cleanTables(db));
 
     afterEach('cleanup', () => helpers.cleanTables(db));
-
-    describe(`GET /api/rules`, () => {
-        context('When there are no rules in the database', () => {
-            beforeEach('seed with only users', () => {
-                return helpers.seedUsers(db, testUsers);
-            });
-
-            it('returns a 200 and an empty array', () => {
-                return supertest(app)
-                    .get('/api/rules')
-                    .set('Authorization', helpers.makeAuthHeader(testUser))
-                    .expect(200, []);
-            });
-        });
-
-        context('When there are rules in the database', () => {
-            beforeEach('Seed tables in full', () => {
-                return helpers.seedRules(db, testUsers, testGames, testRules);
-            });
-
-            it('Returns a 200 and the users rules only', () => {
-                return helpers.makeExpectedRulesForUser(db, testUser)
-                    .then(rules => {
-                        const expectedRules = rules.map(rule => helpers.sanitizeRules(rule));
-
-                        return supertest(app)
-                            .get('/api/rules')
-                            .set('Authorization', helpers.makeAuthHeader(testUser))
-                            .expect(200, expectedRules);
-                    });
-            });
-        });
-    });
 
     describe(`POST /api/rules`, () => {
         beforeEach(`Seed in full`, () => {
@@ -285,7 +252,7 @@ describe(`Reviews Enpoints`, function () {
         });
     });
 
-    describe('/search/:game_id', () => {
+    describe.only('/search/:game_id', () => {
         context('When the id is invalid', () => {
             beforeEach('Seed tables in full', () => helpers.seedRules(db, testUsers, testGames, testRules));
 
@@ -321,7 +288,10 @@ describe(`Reviews Enpoints`, function () {
 
             it('returns a 200 rules for the game', () => {
                 const getId = 3;
-                const expectedRules = testRules.filter(rule => rule.game_id === getId);
+                const expectedRules = testExpectedRules.filter(rule => {
+                    return (rule.game_id === getId &&
+                        rule.assigned_user !== testUser.id)
+                });
 
                 return supertest(app)
                     .get(`/api/rules/search/${getId}`)

@@ -68,6 +68,13 @@ function makeRulesArray() {
             rule_title: 'title 4',
             rule_description: 'description 4',
             assigned_user: 3
+        },
+        {
+            id: 5,
+            game_id: 3,
+            rule_title: 'title 5',
+            rule_description: 'description 5',
+            assigned_user: 2
         }
     ]
 }
@@ -212,24 +219,6 @@ function seedRules(db, users, games, rules) {
     })
 }
 
-function makeExpectedRulesForUser(db, user) {
-    return db.select('*')
-        .from('rules')
-        .fullOuterJoin('games', 'games.id', 'rules.game_id')
-        .where({ assigned_user: user.id })
-}
-
-function sanitizeRules(rule) {
-    return {
-        id: rule.id,
-        game_id: rule.game_id,
-        game_name: xss(rule.game_name),
-        rule_title: xss(rule.rule_title),
-        rule_description: xss(rule.rule_description),
-        assigned_user: rule.assigned_user
-    }
-}
-
 function createTestExpectedRules() {
     return [
         {
@@ -263,6 +252,14 @@ function createTestExpectedRules() {
             rule_title: 'title 4',
             rule_description: 'description 4',
             assigned_user: 3
+        },
+        {
+            id: 5,
+            game_id: 3,
+            game_name: 'game 3',
+            rule_title: 'title 5',
+            rule_description: 'description 5',
+            assigned_user: 2
         }
     ]
 }
@@ -283,8 +280,6 @@ module.exports = {
     seedGames,
     seedRules,
     makeMaliciousRule,
-    makeExpectedRulesForUser,
-    sanitizeRules,
     createTestExpectedRules,
     makeAuthHeader,
     makeExpectedGames
