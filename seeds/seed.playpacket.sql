@@ -23,6 +23,9 @@ VALUES
 ('Settlers of Catan'),
 ('Trouble'),
 ('Scrabble'),
+('Risk'),
+('Poker'),
+('Pong'),
 ('Yahtzee');
 
 INSERT INTO rules (game_id, rule_title, rule_description, assigned_user)

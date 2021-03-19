@@ -21,4 +21,12 @@ gamesRouter.route('/all')
             });
     });
 
+gamesRouter.route('/:game_id')
+    .get((req, res, next) => {
+        GamesService.getIndividualGame(req.app.get('db'), req.params.game_id)
+            .then(game => {
+                return res.status(200).json(game[0]);
+            });
+    });
+
 module.exports = gamesRouter;

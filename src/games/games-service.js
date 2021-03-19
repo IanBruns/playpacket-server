@@ -10,6 +10,11 @@ const GamesService = {
     getAllGames(db) {
         return db.select('*')
             .from('games');
+    },
+    getIndividualGame(db, id) {
+        return db.select('*')
+            .from('games')
+            .where({ id });
     }
 };
 
