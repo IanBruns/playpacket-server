@@ -79,6 +79,13 @@ const RulesService = {
             .insert(items)
             .into('usersgames')
             .returning('*');
+    },
+    deleteFromUsersGames(db, user_id, game_id) {
+        return db
+            .from('usersgames')
+            .where({ user_id })
+            .andWhere({ game_id })
+            .delete();
     }
 };
 

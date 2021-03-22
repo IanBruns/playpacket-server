@@ -3,6 +3,7 @@ const path = require('path');
 const RulesService = require('./rules-service');
 const xss = require('xss');
 const { requireAuth } = require('../middleware/api-auth');
+const { deleteFromUsersGames } = require('./rules-service');
 const rulesRouter = express.Router();
 const jsonBodyParser = express.json();
 
@@ -104,9 +105,21 @@ rulesRouter.route('/:rule_id')
             })
             .catch(next);
     })
-    .delete((req, res, next) => {
+    .delete(async (req, res, next) => {
         RulesService.deleteRule(req.app.get('db'), res.rule.id)
             .then(numRowsAffected => {
+                const usersGamesCheck = await RulesService.getUserRulesForGame(
+                    req.app.get('db'),
+                    req.user.id,
+                    res.game.id
+                );
+                if (usersGamesCheck.length === 0) {
+                    await deleteFromUsersGames(
+                        req.app.get('db'),
+                        req.user.id,
+                        res.game.id
+                    )
+                }
                 return res.status(204).end();
             })
     })
