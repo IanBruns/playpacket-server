@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe.only(`Reviews Enpoints`, function () {
+describe(`Reviews Enpoints`, function () {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
@@ -26,7 +26,7 @@ describe.only(`Reviews Enpoints`, function () {
 
     afterEach('cleanup', () => helpers.cleanTables(db));
 
-    describe.only(`POST /api/rules`, () => {
+    describe(`POST /api/rules`, () => {
         beforeEach(`Seed in full`, () => {
             return helpers.seedRules(db, testUsers, testGames, testRules);
         });
@@ -250,10 +250,10 @@ describe.only(`Reviews Enpoints`, function () {
         });
     });
 
-    describe('DELETE /api/rules/:rule_id', () => {
+    describe.only('DELETE /api/rules/:rule_id', () => {
         beforeEach(`Seed in full`, () => helpers.seedRules(db, testUsers, testGames, testRules));
 
-        it('sends a 404 when trying to delete another players rule', () => {
+        it.skip('sends a 404 when trying to delete another players rule', () => {
             const updateId = 4;
 
             return supertest(app)
