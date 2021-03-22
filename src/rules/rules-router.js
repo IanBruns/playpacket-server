@@ -105,11 +105,26 @@ rulesRouter.route('/:rule_id')
             })
             .catch(next);
     })
-    .delete((req, res, next) => {
-        RulesService.deleteRule(req.app.get('db'), res.rule.id)
-            .then(numRowsAffected => {
-                return res.status(204).end();
-            })
+    .delete(async function (req, res, next) {
+        const game_id = await RulesService.getGameIdFromRule(req.app.get('db'), res.rule.id);
+
+        await RulesService.deleteRule(req.app.get('db'), res.rule.id);
+
+        const gameRules = await RulesService.getUserRulesForGame(
+            req.app.get('db'),
+            req.user.id,
+            game_id.game_id
+        );
+
+        if (gameRules.length === 0) {
+            await RulesService.deleteFromUsersGames(
+                req.app.get('db'),
+                req.user.id,
+                res.game_id
+            )
+        }
+
+        return res.status(204).end();
     })
 
 rulesRouter.route('/games/:game_id')

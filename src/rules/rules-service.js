@@ -25,6 +25,12 @@ const RulesService = {
             .where({ assigned_user: userId })
             .andWhere({ game_id: gameId });
     },
+    getGameIdFromRule(db, rule_id) {
+        return db.select('game_id')
+            .from('rules')
+            .where({ id: rule_id })
+            .first();
+    },
     getSearchRules(db, userId, game_id) {
         return db.select('r.*', 'g.game_name')
             .from('rules as r')
