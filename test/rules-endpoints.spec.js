@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe(`Reviews Enpoints`, function () {
+describe.only(`Reviews Enpoints`, function () {
     let db;
 
     const { testUsers, testGames, testRules } = helpers.makePlayPacketFixtures();
@@ -26,7 +26,7 @@ describe(`Reviews Enpoints`, function () {
 
     afterEach('cleanup', () => helpers.cleanTables(db));
 
-    describe(`POST /api/rules`, () => {
+    describe.only(`POST /api/rules`, () => {
         beforeEach(`Seed in full`, () => {
             return helpers.seedRules(db, testUsers, testGames, testRules);
         });
@@ -82,7 +82,7 @@ describe(`Reviews Enpoints`, function () {
                             });
                     });
             });
-        })
+        });
 
         it('returns a 201 and pulls the item in a GET request', () => {
             const newRule = {
@@ -111,6 +111,30 @@ describe(`Reviews Enpoints`, function () {
                             expect(row.rule_title).to.eql(newRule.rule_title);
                             expect(row.rule_description).to.eql(newRule.rule_description);
                             expect(row.game_id).to.eql(newRule.game_id);
+                        });
+                });
+        });
+
+        it('Adds a new game to the join table when requested', () => {
+            const newRule = {
+                game_id: 3,
+                rule_title: 'New Rule',
+                rule_description: 'New Rule again'
+            };
+
+            return supertest(app)
+                .post('/api/rules')
+                .set('Authorization', helpers.makeAuthHeader(testUser))
+                .send(newRule)
+                .then(res => {
+                    return db.from('usersgames')
+                        .select('*')
+                        .where({ user_id: testUser.id })
+                        .andWhere({ game_id: newRule.game_id })
+                        .first()
+                        .then(row => {
+                            console.log(row);
+                            expect(row);
                         });
                 });
         });

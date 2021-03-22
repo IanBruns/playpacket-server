@@ -44,22 +44,34 @@ rulesRouter.route('/')
                     newRule.game_id
                 )
                     .then(inTable => {
-                        if (!inTable) {
-                            RulesService.insertIntoUsersGames({
+                        if (inTable.length === 0) {
+                            const tableAdd = {
                                 user_id: req.user.id,
                                 game_id: newRule.game_id
-                            })
+                            };
+                            RulesService.insertIntoUsersGames(req.app.get('db'), tableAdd)
+                                .then(() => {
+                                    newRule.assigned_user = req.user.id;
+
+                                    RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
+                                        .then(rule => {
+                                            return res.status(201)
+                                                .location(path.posix.join(req.originalUrl, `/${rule.id}`))
+                                                .json(RulesService.sanitizeUserRule(rule));
+                                        })
+                                        .catch(next);
+                                })
+                        } else {
+                            newRule.assigned_user = req.user.id;
+
+                            RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
+                                .then(rule => {
+                                    return res.status(201)
+                                        .location(path.posix.join(req.originalUrl, `/${rule.id}`))
+                                        .json(RulesService.sanitizeUserRule(rule));
+                                })
+                                .catch(next);
                         }
-
-                        newRule.assigned_user = req.user.id;
-
-                        RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
-                            .then(rule => {
-                                return res.status(201)
-                                    .location(path.posix.join(req.originalUrl, `/${rule.id}`))
-                                    .json(RulesService.sanitizeUserRule(rule));
-                            })
-                            .catch(next);
                     })
             })
             .catch(next);

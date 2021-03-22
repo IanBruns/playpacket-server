@@ -74,7 +74,7 @@ const RulesService = {
             .where({ user_id })
             .andWhere({ game_id });
     },
-    insertIntoUsersGames(items) {
+    insertIntoUsersGames(db, items) {
         return db
             .insert(items)
             .into('usersgames')
