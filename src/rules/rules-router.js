@@ -16,7 +16,7 @@ rulesRouter.route('/')
             })
             .catch(next);
     })
-    .post(jsonBodyParser, (req, res, next) => {
+    .post(jsonBodyParser, async function (req, res, next) {
         const { rule_title, rule_description, game_id } = req.body;
         const newRule = { rule_title, rule_description, game_id };
 
@@ -28,52 +28,34 @@ rulesRouter.route('/')
         }
         newRule.game_id = parseInt(newRule.game_id);
 
-        RulesService.getGameById(
+        const game = await RulesService.getGameById(req.app.get('db'), newRule.game_id)
+        if (!game) {
+            return res.status(404).send({
+                error: { message: `Game does not exist` }
+            })
+        }
+
+        const checkJoinTable = await RulesService.pullGameAssignedToUser(
             req.app.get('db'),
+            req.user.id,
             newRule.game_id
         )
-            .then(game => {
-                if (!game) {
-                    return res.status(404).send({
-                        error: { message: `Game does not exist` }
-                    })
-                }
 
-                RulesService.pullGameAssignedToUser(
-                    req.app.get('db'),
-                    req.user.id,
-                    newRule.game_id
-                )
-                    .then(inTable => {
-                        if (inTable.length === 0) {
-                            const tableAdd = {
-                                user_id: req.user.id,
-                                game_id: newRule.game_id
-                            };
-                            RulesService.insertIntoUsersGames(req.app.get('db'), tableAdd)
-                                .then(() => {
-                                    newRule.assigned_user = req.user.id;
+        if (checkJoinTable.length === 0) {
+            const tableAdd = {
+                user_id: req.user.id,
+                game_id: newRule.game_id
+            };
+            await RulesService.insertIntoUsersGames(req.app.get('db'), tableAdd)
+        }
 
-                                    RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
-                                        .then(rule => {
-                                            return res.status(201)
-                                                .location(path.posix.join(req.originalUrl, `/${rule.id}`))
-                                                .json(RulesService.sanitizeUserRule(rule));
-                                        })
-                                        .catch(next);
-                                })
-                        } else {
-                            newRule.assigned_user = req.user.id;
+        newRule.assigned_user = req.user.id;
 
-                            RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
-                                .then(rule => {
-                                    return res.status(201)
-                                        .location(path.posix.join(req.originalUrl, `/${rule.id}`))
-                                        .json(RulesService.sanitizeUserRule(rule));
-                                })
-                                .catch(next);
-                        }
-                    })
+        RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
+            .then(rule => {
+                return res.status(201)
+                    .location(path.posix.join(req.originalUrl, `/${rule.id}`))
+                    .json(RulesService.sanitizeUserRule(rule));
             })
             .catch(next);
     });

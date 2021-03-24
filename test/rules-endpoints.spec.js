@@ -250,10 +250,10 @@ describe(`Reviews Enpoints`, function () {
         });
     });
 
-    describe.only('DELETE /api/rules/:rule_id', () => {
+    describe('DELETE /api/rules/:rule_id', () => {
         beforeEach(`Seed in full`, () => helpers.seedRules(db, testUsers, testGames, testRules));
 
-        it.skip('sends a 404 when trying to delete another players rule', () => {
+        it('sends a 404 when trying to delete another players rule', () => {
             const updateId = 4;
 
             return supertest(app)
@@ -264,7 +264,7 @@ describe(`Reviews Enpoints`, function () {
                 });
         });
 
-        it.skip('Sends a 204 and removes the exercises', () => {
+        it('Sends a 204 and removes the exercises', () => {
             const idToDelete = 1;
 
             return supertest(app)
