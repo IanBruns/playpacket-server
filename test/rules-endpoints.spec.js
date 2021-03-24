@@ -250,10 +250,10 @@ describe(`Reviews Enpoints`, function () {
         });
     });
 
-    describe('DELETE /api/rules/:rule_id', () => {
+    describe.only('DELETE /api/rules/:rule_id', () => {
         beforeEach(`Seed in full`, () => helpers.seedRules(db, testUsers, testGames, testRules));
 
-        it('sends a 404 when trying to delete another players rule', () => {
+        it.skip('sends a 404 when trying to delete another players rule', () => {
             const updateId = 4;
 
             return supertest(app)
@@ -264,13 +264,32 @@ describe(`Reviews Enpoints`, function () {
                 });
         });
 
-        it('Sends a 204 and removes the exercises', () => {
+        it.skip('Sends a 204 and removes the exercises', () => {
             const idToDelete = 1;
 
             return supertest(app)
                 .delete(`/api/rules/${idToDelete}`)
                 .set('Authorization', helpers.makeAuthHeader(testUser))
                 .expect(204);
+        });
+
+        it('Deletes the item AND deletes from the join table if last rule', () => {
+            const idToDelete = 3;
+            const game_id = 2;
+
+            return supertest(app)
+                .delete(`/api/rules/${idToDelete}`)
+                .set('Authorization', helpers.makeAuthHeader(testUser))
+                .expect(204)
+                .expect(async function () {
+                    const joinTable = await db.select('*')
+                        .from('usersgames')
+                        .where({ user_id: testUser.id })
+                        .andWhere({ game_id });
+
+                    console.log(joinTable);
+                })
+
         });
     });
 

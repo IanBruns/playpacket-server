@@ -3,7 +3,7 @@ const path = require('path');
 const RulesService = require('./rules-service');
 const xss = require('xss');
 const { requireAuth } = require('../middleware/api-auth');
-const { deleteFromUsersGames } = require('./rules-service');
+const { deleteFromUsersGames, pullGameAssignedToUser } = require('./rules-service');
 const rulesRouter = express.Router();
 const jsonBodyParser = express.json();
 
@@ -120,7 +120,7 @@ rulesRouter.route('/:rule_id')
             await RulesService.deleteFromUsersGames(
                 req.app.get('db'),
                 req.user.id,
-                res.game_id
+                game_id.game_id
             )
         }
 
