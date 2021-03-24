@@ -51,13 +51,11 @@ rulesRouter.route('/')
 
         newRule.assigned_user = req.user.id;
 
-        RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
-            .then(rule => {
-                return res.status(201)
-                    .location(path.posix.join(req.originalUrl, `/${rule.id}`))
-                    .json(RulesService.sanitizeUserRule(rule));
-            })
-            .catch(next);
+        const rule = await RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
+
+        return res.status(201)
+            .location(path.posix.join(req.originalUrl, `/${rule.id}`))
+            .json(RulesService.sanitizeUserRule(rule));
     });
 
 rulesRouter.route('/:rule_id')
