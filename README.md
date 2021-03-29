@@ -61,7 +61,7 @@ For User authentication upon login
 #### Users Endpoints
 
 ```
-POST /api/auth/login
+POST /api/users
 ```
 
 For User account creation.  There are checks on password requirements and if the user_name is currently in
@@ -75,7 +75,17 @@ the database.  JSON Web Tokens are used to hash the password
 #### /api/games
 
 The User currently cannot POST games, all of that comes from what is already in the database
-The user will need to access the games in 1 of 2 ways.  THe
+The user will get the games 1 of 3 ways, all games will output in the following format:
+
+```json
+[
+  {
+    id: int,
+    game_name: int
+  }
+]
+
+```
 
 ### Status Codes
 
