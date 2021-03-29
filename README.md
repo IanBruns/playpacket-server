@@ -72,7 +72,7 @@ the database.  JSON Web Tokens are used to hash the password
 | user_name   | string      | Required. User username |
 | password    | string      | Required. User password |
 
-#### /api/games
+#### Games Endpoints
 
 The User currently cannot POST games, all of that comes from what is already in the database
 The user will get the games 1 of 3 ways, all games will output in the following format:
@@ -85,6 +85,88 @@ The user will get the games 1 of 3 ways, all games will output in the following 
   }
 ]
 ```
+
+There are 3 GET requests:
+
+```
+GET /api/games/all
+```
+
+As the title suggests, returns all games in the database
+
+```
+GET /api/games
+```
+
+This will return the user's games (user id required through middleware)
+
+```
+GET /api/games/:game_id
+```
+
+This will return one singular game based on id
+
+### Rules Endpoints
+
+The Rules endpoints utilize ALL CRUD functions, only GET and POST will return any JSON data
+The rest will just return status codes based on endpoint.  JSON data will be returned as such:
+
+```json
+[
+  {
+    "id": "int",
+    "game_id": "int",
+    "game_name": "string",
+    "rule_title": "string",
+    "rule_descripion": "string",
+    "assigned_user": "int"
+  }
+]
+```
+
+```
+GET /api/rules
+```
+
+Returns all Rules
+
+```
+GET /api/rules/games/:game_id
+```
+
+Returns all of the user's rules (user id obtained through middleware) for the specific game
+
+```
+GET /api/rules/search/:game_id
+```
+
+The opposite of the last GET, this returns all games that are NOT assigned to the user
+
+```
+POST /api/rules
+```
+
+This will create a new user rule.  user_id and game_id for assigning obtained through middleware
+will also manually to the join table for games assigned to that user
+
+| Body Key    | Type        | Description |
+| ----------- | ----------- | ----------- |
+| rule_title  | string      | Title for the rule|
+| rule_description    | string      | Required. The actual rule itself |
+
+```
+PATCH /api/rules/:rule_id
+```
+
+Has same requirements as above but for updating the user's rule for tweaks
+
+```
+DELETE /api/rules/:rule_id
+```
+
+Removes the rule
+
+*note, DELETE and PATCH require that the user's id matches the rule's assigned user*
 
 ### Status Codes
 
