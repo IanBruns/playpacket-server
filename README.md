@@ -80,11 +80,10 @@ The user will get the games 1 of 3 ways, all games will output in the following 
 ```json
 [
   {
-    id: int,
-    game_name: int
+    "id": "int",
+    "game_name": "string"
   }
 ]
-
 ```
 
 ### Status Codes
