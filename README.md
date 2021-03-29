@@ -180,3 +180,8 @@ Right Routine returns the following status codes in its API:
 | 400 | `BAD REQUEST` |
 | 404 | `NOT FOUND` |
 | 500 | `INTERNAL SERVER ERROR` |
+
+
+### Want to say Hi?
+
+For all inquiries or job leads (*hint*), please reach out to me at ian@rbruns.com!
