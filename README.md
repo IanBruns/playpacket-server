@@ -11,6 +11,11 @@ A) Store Users House Rules for board games
 B) Users can also search other User's rules
 C) Users can add searched rules to their collections
 
+### Technology Used
+
+1) Node.js - Express
+2) Postgres - Knex used for SQL/Javascript integration
+
 ### To Install Locally
 
 1) Clone github repo to your machine
