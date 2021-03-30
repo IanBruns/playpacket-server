@@ -25,10 +25,6 @@ app.use('/api/users', usersRouter);
 app.use('/api/rules', rulesRouter);
 app.use('/api/games', gamesRouter);
 
-app.get('/', (req, res) => {
-    res.send('Hello, world!');
-});
-
 app.use(function errorHandler(error, req, res, next) {
     let response;
     if (NODE_ENV === 'production') {
