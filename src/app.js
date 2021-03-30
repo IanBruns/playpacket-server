@@ -20,11 +20,6 @@ app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
 
-app.use('/api/auth', authRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/rules', rulesRouter);
-app.use('/api/games', gamesRouter);
-
 app.use(function errorHandler(error, req, res, next) {
     let response;
     if (NODE_ENV === 'production') {
@@ -35,5 +30,10 @@ app.use(function errorHandler(error, req, res, next) {
     }
     res.status(500).json(response);
 });
+
+app.use('/api/auth', authRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/rules', rulesRouter);
+app.use('/api/games', gamesRouter);
 
 module.exports = app;
