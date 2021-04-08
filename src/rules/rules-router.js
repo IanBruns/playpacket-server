@@ -17,45 +17,49 @@ rulesRouter.route('/')
             .catch(next);
     })
     .post(jsonBodyParser, async function (req, res, next) {
-        const { rule_title, rule_description, game_id } = req.body;
-        const newRule = { rule_title, rule_description, game_id };
+        try {
+            const { rule_title, rule_description, game_id } = req.body;
+            const newRule = { rule_title, rule_description, game_id };
 
-        for (const [key, value] of Object.entries(newRule)) {
-            if (key != 'rule_title' && (value == null || value.length < 1))
-                return res.status(400).json({
-                    error: { message: `Missing ${key} in request body` }
-                });
+            for (const [key, value] of Object.entries(newRule)) {
+                if (key != 'rule_title' && (value == null || value.length < 1))
+                    return res.status(400).json({
+                        error: { message: `Missing ${key} in request body` }
+                    });
+            }
+            newRule.game_id = parseInt(newRule.game_id);
+
+            const game = await RulesService.getGameById(req.app.get('db'), newRule.game_id)
+            if (!game) {
+                return res.status(404).send({
+                    error: { message: `Game does not exist` }
+                })
+            }
+
+            const checkJoinTable = await RulesService.pullGameAssignedToUser(
+                req.app.get('db'),
+                req.user.id,
+                newRule.game_id
+            )
+
+            if (checkJoinTable.length === 0) {
+                const tableAdd = {
+                    user_id: req.user.id,
+                    game_id: newRule.game_id
+                };
+                await RulesService.insertIntoUsersGames(req.app.get('db'), tableAdd)
+            }
+
+            newRule.assigned_user = req.user.id;
+
+            const rule = await RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
+
+            return res.status(201)
+                .location(path.posix.join(req.originalUrl, `/${rule.id}`))
+                .json(RulesService.sanitizeUserRule(rule));
+        } catch (err) {
+            next(err);
         }
-        newRule.game_id = parseInt(newRule.game_id);
-
-        const game = await RulesService.getGameById(req.app.get('db'), newRule.game_id)
-        if (!game) {
-            return res.status(404).send({
-                error: { message: `Game does not exist` }
-            })
-        }
-
-        const checkJoinTable = await RulesService.pullGameAssignedToUser(
-            req.app.get('db'),
-            req.user.id,
-            newRule.game_id
-        )
-
-        if (checkJoinTable.length === 0) {
-            const tableAdd = {
-                user_id: req.user.id,
-                game_id: newRule.game_id
-            };
-            await RulesService.insertIntoUsersGames(req.app.get('db'), tableAdd)
-        }
-
-        newRule.assigned_user = req.user.id;
-
-        const rule = await RulesService.addNewUserRule(req.app.get('db'), newRule, req.user.id)
-
-        return res.status(201)
-            .location(path.posix.join(req.originalUrl, `/${rule.id}`))
-            .json(RulesService.sanitizeUserRule(rule));
     });
 
 rulesRouter.route('/:rule_id')
@@ -86,25 +90,29 @@ rulesRouter.route('/:rule_id')
             .catch(next);
     })
     .delete(async function (req, res, next) {
-        const game_id = await RulesService.getGameIdFromRule(req.app.get('db'), res.rule.id);
+        try {
+            const game_id = await RulesService.getGameIdFromRule(req.app.get('db'), res.rule.id);
 
-        await RulesService.deleteRule(req.app.get('db'), res.rule.id);
+            await RulesService.deleteRule(req.app.get('db'), res.rule.id);
 
-        const gameRules = await RulesService.getUserRulesForGame(
-            req.app.get('db'),
-            req.user.id,
-            game_id.game_id
-        );
-
-        if (gameRules.length === 0) {
-            await RulesService.deleteFromUsersGames(
+            const gameRules = await RulesService.getUserRulesForGame(
                 req.app.get('db'),
                 req.user.id,
                 game_id.game_id
-            )
-        }
+            );
 
-        return res.status(204).end();
+            if (gameRules.length === 0) {
+                await RulesService.deleteFromUsersGames(
+                    req.app.get('db'),
+                    req.user.id,
+                    game_id.game_id
+                )
+            }
+
+            return res.status(204).end();
+        } catch (err) {
+            next(err);
+        }
     })
 
 rulesRouter.route('/games/:game_id')
